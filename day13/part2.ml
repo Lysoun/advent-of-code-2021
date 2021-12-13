@@ -48,15 +48,23 @@ let fold_vertically row numberOfDotsByPosition =
 
 let rec execute_all_folding_instructions file numberOfDotsByPosition =
     match try (input_line file) with End_of_file -> "" with
-     | "" -> (Hashtbl.length numberOfDotsByPosition)
+     | "" -> numberOfDotsByPosition
      | line ->
         let foldingInstruction = (String.split_on_char '=' (List.nth (String.split_on_char ' ' line) 2)) in
         let lineToFold = (int_of_string (List.nth foldingInstruction 1)) in
         if (List.nth foldingInstruction 0) = "x"
         then (fold_horizontally lineToFold numberOfDotsByPosition)
         else (fold_vertically lineToFold numberOfDotsByPosition);
-        (Hashtbl.length numberOfDotsByPosition)
-(*       (execute_all_folding_instructions file numberOfDotsByPosition)*)
+       (execute_all_folding_instructions file numberOfDotsByPosition)
 ;;
 
-(print_int (execute_all_folding_instructions file numberOfDotsByPosition));;
+let print_folded_paper numberOfDotsByPosition =
+    for y = 0 to 5 do
+        for x = 0 to 40 do
+            if(Hashtbl.mem numberOfDotsByPosition (x, y)) then print_string ("█") else (print_string " ")
+        done;
+        (print_string "\n")
+    done
+;;
+
+(print_folded_paper (execute_all_folding_instructions file numberOfDotsByPosition));;
